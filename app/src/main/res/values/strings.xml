@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Трекер привычек</string>
+    <string name="edit_habit_title">Редактор привычки</string>
+
+    <string name="habit_name_hint">Название</string>
+    <string name="habit_description_hint">Описание</string>
+    <string name="habit_times_hint">Количество повторений</string>
+    <string name="habit_period_hint">Период повторений</string>
+
+    <string name="habit_priority_text">Приоритет</string>
+    <string name="habit_type_text">Тип</string>
+    <string name="save_habit_text">Сохранить</string>
+
+    <string-array name="habit_priorities">
+        <item>Низкий</item>
+        <item>Средний</item>
+        <item>Высокий</item>
+    </string-array>
+    <string name="habit_type_good">Хорошая</string>
+    <string name="habit_type_bad">Плохая</string>
+</resources>
