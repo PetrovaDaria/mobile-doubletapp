@@ -7,10 +7,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
+
 class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
+    protected lateinit var clickListener: View.OnClickListener
+
+    fun setOnItemClickListener(clickListener: View.OnClickListener) {
+        println("set")
+        this.clickListener = clickListener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.list_item, parent, false);
+        val view = inflater.inflate(R.layout.list_item, parent, false)
         return ViewHolder(view);
     }
 
@@ -24,7 +32,7 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
         return items[position]
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val name = itemView.findViewById<TextView>(R.id.habit_name)
         private val description = itemView.findViewById<TextView>(R.id.habit_description)
         private val priority = itemView.findViewById<TextView>(R.id.habit_priority)
@@ -43,6 +51,7 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
         )
 
         fun bind(habit: Habit) {
+            itemView.setOnClickListener(clickListener)
             val priorityColor = priorityToColor[habit.Priority] ?: R.color.green
             val typeEmoji = typeToEmoji[habit.Type] ?: Type.Good
             val timesStr = if (habit.Times in 11..19 || habit.Times % 10 in 0..1 || habit.Times % 10 in 5..9) {
@@ -67,6 +76,5 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
             type.text = typeEmoji.toString()
             repeat.text = repeatValue
         }
-
     }
 }
