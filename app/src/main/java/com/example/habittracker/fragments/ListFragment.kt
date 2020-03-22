@@ -1,4 +1,4 @@
-package com.example.habittracker
+package com.example.habittracker.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,6 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.habittracker.*
+import com.example.habittracker.activities.EditHabitActivity
+import com.example.habittracker.enums.Priority
+import com.example.habittracker.enums.Type
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ListFragment: Fragment() {
@@ -17,8 +21,22 @@ class ListFragment: Fragment() {
     private lateinit var viewManager: RecyclerView.LayoutManager
     // private var habits = mutableListOf<Habit>()
     private var habits = mutableListOf(
-        Habit("Спать 8 часов", "Минимум 7, максимум 9", Priority.High, Type.Good, 1, 1),
-        Habit("Пить вино", "И ничего крепче", Priority.Low, Type.Bad, 1, 7)
+        Habit(
+            "Спать 8 часов",
+            "Минимум 7, максимум 9",
+            Priority.High,
+            Type.Good,
+            1,
+            1
+        ),
+        Habit(
+            "Пить вино",
+            "И ничего крепче",
+            Priority.Low,
+            Type.Bad,
+            1,
+            7
+        )
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

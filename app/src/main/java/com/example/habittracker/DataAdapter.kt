@@ -6,13 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.habittracker.enums.Priority
+import com.example.habittracker.enums.Type
 
 
 class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {
     protected lateinit var clickListener: View.OnClickListener
 
     fun setOnItemClickListener(clickListener: View.OnClickListener) {
-        println("set")
         this.clickListener = clickListener
     }
 
