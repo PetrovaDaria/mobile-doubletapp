@@ -21,4 +21,8 @@
 
     <string name="menu_item_main">Главная</string>
     <string name="menu_item_about">О программе</string>
+
+    <string name="about_text">
+        Трекер привычек by Петрова Дарья
+    </string>
 </resources>
