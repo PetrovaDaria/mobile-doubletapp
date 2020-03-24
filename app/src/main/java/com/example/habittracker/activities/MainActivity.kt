@@ -1,18 +1,16 @@
 package com.example.habittracker.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.habittracker.Habit
-import com.example.habittracker.fragments.ListFragment
 import com.example.habittracker.R
-import com.example.habittracker.fragments.EditHabitCallback
-import com.example.habittracker.fragments.EditHabitFragment
-import com.example.habittracker.fragments.ListCallback
+import com.example.habittracker.fragments.*
+
 
 class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback {
     val LIST_TAG = "ListFragment"
     val EDIT_HABIT_TAG = "EditHabitFragment"
-    val listFragment = ListFragment()
+    val viewPagerFragment = ViewPagerFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +21,7 @@ class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback {
                 .beginTransaction()
                 .replace(
                     R.id.main_activity,
-                    listFragment,
+                    viewPagerFragment,
                     LIST_TAG
                 )
                 .addToBackStack(LIST_TAG)
@@ -68,7 +66,7 @@ class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback {
         val bundle = Bundle()
         bundle.putInt("habitPosition", habitPosition)
         bundle.putParcelable("habit", habit)
-        listFragment.arguments = bundle
+        viewPagerFragment.arguments = bundle
         onBackPressed()
     }
 }

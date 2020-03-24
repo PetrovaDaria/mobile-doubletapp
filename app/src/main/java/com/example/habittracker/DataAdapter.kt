@@ -33,6 +33,10 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
         return items[position]
     }
 
+    fun setHabits(habits: MutableList<Habit>) {
+        items = habits
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val name = itemView.findViewById<TextView>(R.id.habit_name)
         private val description = itemView.findViewById<TextView>(R.id.habit_description)

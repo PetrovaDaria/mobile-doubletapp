@@ -20,24 +20,39 @@ class ListFragment: Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-    private var habits = mutableListOf(
-        Habit(
-            "Спать 8 часов",
-            "Минимум 7, максимум 9",
-            Priority.High,
-            Type.Good,
-            1,
-            1
-        ),
-        Habit(
-            "Пить вино",
-            "И ничего крепче",
-            Priority.Low,
-            Type.Bad,
-            1,
-            7
-        )
-    )
+    private lateinit var filterType: Type
+//    private var habits = mutableListOf(
+//        Habit(
+//            "Спать 8 часов",
+//            "Минимум 7, максимум 9",
+//            Priority.High,
+//            Type.Good,
+//            1,
+//            1
+//        ),
+//        Habit(
+//            "Пить вино",
+//            "И ничего крепче",
+//            Priority.Low,
+//            Type.Bad,
+//            1,
+//            7
+//        )
+//    )
+    private var habits = mutableListOf<Habit>()
+    private var filteredHabits = mutableListOf<Habit>()
+    private var habitsPositions = mutableMapOf<Habit, Int>()
+
+    companion object {
+        fun newInstance(type: Type, habits: List<Habit>): ListFragment {
+            val fragment = ListFragment()
+            val bundle = Bundle()
+            bundle.putSerializable("type", type)
+            bundle.putParcelableArrayList("habits", ArrayList<Parcelable>(habits))
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -59,6 +74,11 @@ class ListFragment: Fragment() {
                 onEditHabit(v)
             }
         })
+
+//        arguments?.let {
+//            filterType = it.getSerializable("type") as Type
+//            habits = it.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
+//        }
     }
 
     override fun onCreateView(
@@ -95,6 +115,9 @@ class ListFragment: Fragment() {
                 viewAdapter.notifyItemChanged(habitPosition)
             }
         }
+        arguments?.clear()
+
+        // filterHabits()
 
         return view
     }
@@ -104,8 +127,22 @@ class ListFragment: Fragment() {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as DataAdapter).getHabit(position)
             callback?.onEditHabit(habit, position)
+//            val realPosition = habitsPositions[habit]
+//            if (realPosition != null) {
+//                callback?.onEditHabit(habit, realPosition)
+//            }
         }
     }
+
+//    fun filterHabits() {
+//        for (i in 0 until habits.size) {
+//            val habit = habits[i]
+//            if (habit.Type == filterType) {
+//                filteredHabits.add(habit)
+//                habitsPositions[habit] = i
+//            }
+//        }
+//    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
