@@ -18,4 +18,7 @@
     </string-array>
     <string name="habit_type_good">Хорошая</string>
     <string name="habit_type_bad">Плохая</string>
+
+    <string name="menu_item_main">Главная</string>
+    <string name="menu_item_about">О программе</string>
 </resources>
