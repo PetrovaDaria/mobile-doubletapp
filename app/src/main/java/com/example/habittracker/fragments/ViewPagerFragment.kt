@@ -15,8 +15,8 @@ import com.google.android.material.tabs.TabLayout
 
 class ViewPagerFragment: Fragment() {
     val habits = mutableListOf<Habit>()
-    val goodListFragment = ListFragment() // ListFragment.newInstance(Type.Good, habits)
-    val badListFragment = ListFragment() // ListFragment.newInstance(Type.Bad, habits)
+    val goodListFragment = ListFragment.newInstance(Type.Good)
+    val badListFragment =  ListFragment.newInstance(Type.Bad)
 
     private lateinit var viewPager: ViewPager
     private lateinit var pagerAdapter: MyPagerAdapter
@@ -39,12 +39,8 @@ class ViewPagerFragment: Fragment() {
             habit = it.getParcelable("habit")
         }
         if (habit != null) {
-            if (habit!!.Type == Type.Good) {
-                goodListFragment.arguments = arguments
-            }
-            if (habit!!.Type == Type.Bad) {
-                badListFragment.arguments = arguments
-            }
+            goodListFragment.arguments = arguments
+            badListFragment.arguments = arguments
         }
 
         return view

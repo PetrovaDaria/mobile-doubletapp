@@ -1,7 +1,6 @@
 package com.example.habittracker.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.*
-import com.example.habittracker.enums.Priority
 import com.example.habittracker.enums.Type
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -21,34 +19,15 @@ class ListFragment: Fragment() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var filterType: Type
-//    private var habits = mutableListOf(
-//        Habit(
-//            "Спать 8 часов",
-//            "Минимум 7, максимум 9",
-//            Priority.High,
-//            Type.Good,
-//            1,
-//            1
-//        ),
-//        Habit(
-//            "Пить вино",
-//            "И ничего крепче",
-//            Priority.Low,
-//            Type.Bad,
-//            1,
-//            7
-//        )
-//    )
     private var habits = mutableListOf<Habit>()
     private var filteredHabits = mutableListOf<Habit>()
     private var habitsPositions = mutableMapOf<Habit, Int>()
 
     companion object {
-        fun newInstance(type: Type, habits: List<Habit>): ListFragment {
+        fun newInstance(type: Type): ListFragment {
             val fragment = ListFragment()
             val bundle = Bundle()
             bundle.putSerializable("type", type)
-            bundle.putParcelableArrayList("habits", ArrayList<Parcelable>(habits))
             fragment.arguments = bundle
             return fragment
         }
@@ -65,9 +44,10 @@ class ListFragment: Fragment() {
 
         if (savedInstanceState != null) {
             habits = savedInstanceState.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
+            filteredHabits = savedInstanceState.getParcelableArrayList<Parcelable>("filteredHabits") as MutableList<Habit>
         }
 
-        viewAdapter = DataAdapter(habits)
+        viewAdapter = DataAdapter(filteredHabits)
         (viewAdapter as DataAdapter).setOnItemClickListener(object: View.OnClickListener {
 
             override fun onClick(v: View?) {
@@ -75,10 +55,9 @@ class ListFragment: Fragment() {
             }
         })
 
-//        arguments?.let {
-//            filterType = it.getSerializable("type") as Type
-//            habits = it.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
-//        }
+        arguments?.let {
+            filterType = it.getSerializable("type") as Type
+        }
     }
 
     override fun onCreateView(
@@ -104,20 +83,26 @@ class ListFragment: Fragment() {
             habit = it.getParcelable("habit")
             habitPosition = it.getInt("habitPosition")
         }
-        println("habit position")
-        println(habitPosition)
         if (habit != null) {
             if (habitPosition == -1) {
                 habits.add(habit!!)
             }
             else {
                 habits[habitPosition] = habit!!
-                viewAdapter.notifyItemChanged(habitPosition)
             }
         }
-        arguments?.clear()
 
-        // filterHabits()
+        filteredHabits.clear()
+        for (i in 0 until habits.size) {
+            val h = habits[i]
+            if (h.Type == filterType) {
+                filteredHabits.add(h)
+                habitsPositions[h] = i
+            }
+        }
+        if (habit in filteredHabits) {
+            viewAdapter.notifyItemChanged(habitsPositions[habit]!!)
+        }
 
         return view
     }
@@ -126,28 +111,18 @@ class ListFragment: Fragment() {
         if (v != null) {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as DataAdapter).getHabit(position)
-            callback?.onEditHabit(habit, position)
-//            val realPosition = habitsPositions[habit]
-//            if (realPosition != null) {
-//                callback?.onEditHabit(habit, realPosition)
-//            }
+            val realPosition = habitsPositions[habit]
+            if (realPosition != null) {
+                callback?.onEditHabit(habit, realPosition)
+            }
         }
     }
-
-//    fun filterHabits() {
-//        for (i in 0 until habits.size) {
-//            val habit = habits[i]
-//            if (habit.Type == filterType) {
-//                filteredHabits.add(habit)
-//                habitsPositions[habit] = i
-//            }
-//        }
-//    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putParcelableArrayList("habits", ArrayList<Parcelable>(habits));
+        outState.putParcelableArrayList("habits", ArrayList<Parcelable>(habits))
+        outState.putParcelableArrayList("filteredHabits", ArrayList<Parcelable>(filteredHabits))
     }
 }
 
