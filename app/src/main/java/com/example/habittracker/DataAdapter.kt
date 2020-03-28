@@ -33,10 +33,6 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
         return items[position]
     }
 
-    fun setHabits(habits: MutableList<Habit>) {
-        items = habits
-    }
-
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val name = itemView.findViewById<TextView>(R.id.habit_name)
         private val description = itemView.findViewById<TextView>(R.id.habit_description)
@@ -59,20 +55,8 @@ class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<
             itemView.setOnClickListener(clickListener)
             val priorityColor = priorityToColor[habit.Priority] ?: R.color.green
             val typeEmoji = typeToEmoji[habit.Type] ?: Type.Good
-            val timesStr = if (habit.Times in 11..19 || habit.Times % 10 in 0..1 || habit.Times % 10 in 5..9) {
-                "раз"
-            } else {
-                "раза"
-            }
-            val periodStr = if (habit.Period in 11..19) {
-                "дней"
-            } else if (habit.Period % 10 == 1) {
-                "день"
-            } else if (habit.Period % 10 in 2..4) {
-                "дня"
-            } else {
-                "дней"
-            }
+            val timesStr = itemView.context.resources.getQuantityString(R.plurals.times, habit.Times)
+            val periodStr = itemView.context.resources.getQuantityString(R.plurals.days, habit.Period)
             val repeatValue = "${habit.Times} $timesStr в ${habit.Period} $periodStr"
 
             name.text = habit.Name

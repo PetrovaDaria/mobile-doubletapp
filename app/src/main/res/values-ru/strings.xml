@@ -37,7 +37,9 @@
     </plurals>
 
     <plurals name="times">
+        <item quantity="one">раз</item>
         <item quantity="few">раза</item>
+        <item quantity="many">раз</item>
         <item quantity="other">раз</item>
     </plurals>
 </resources>
