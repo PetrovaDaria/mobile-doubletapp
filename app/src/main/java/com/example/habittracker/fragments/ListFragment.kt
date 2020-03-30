@@ -19,7 +19,6 @@ class ListFragment: Fragment() {
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var filterType: Type
-    private var habits = mutableListOf<Habit>()
     private var filteredHabits = mutableListOf<Habit>()
     private var habitsPositions = mutableMapOf<Habit, Int>()
 
@@ -43,8 +42,13 @@ class ListFragment: Fragment() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState != null) {
-            habits = savedInstanceState.getParcelableArrayList<Parcelable>("habits") as MutableList<Habit>
             filteredHabits = savedInstanceState.getParcelableArrayList<Parcelable>("filteredHabits") as MutableList<Habit>
+            filterType = savedInstanceState.getSerializable("type") as Type
+        }
+        else {
+            arguments?.let {
+                filterType = it.getSerializable("type") as Type
+            }
         }
 
         viewAdapter = DataAdapter(filteredHabits)
@@ -54,10 +58,6 @@ class ListFragment: Fragment() {
                 onEditHabit(v)
             }
         })
-
-        arguments?.let {
-            filterType = it.getSerializable("type") as Type
-        }
     }
 
     override fun onCreateView(
@@ -77,31 +77,22 @@ class ListFragment: Fragment() {
             callback?.onAddHabit()
         }
 
-        var habit: Habit? = null
-        var habitPosition = -1
+        var habits: List<Habit>? = null
         arguments?.let {
-            habit = it.getParcelable("habit")
-            habitPosition = it.getInt("habitPosition")
-        }
-        if (habit != null) {
-            if (habitPosition == -1) {
-                habits.add(habit!!)
-            }
-            else {
-                habits[habitPosition] = habit!!
-            }
+            habits = it.getParcelableArrayList<Habit>("habits")
         }
 
-        filteredHabits.clear()
-        for (i in 0 until habits.size) {
-            val h = habits[i]
-            if (h.Type == filterType) {
-                filteredHabits.add(h)
-                habitsPositions[h] = i
+        if (habits != null) {
+            filteredHabits.clear()
+            for (i in habits!!.indices) {
+                val h = habits!![i]
+                if (h.Type == filterType) {
+                    filteredHabits.add(h)
+                    habitsPositions[h] = i
+                }
             }
-        }
-        if (habit in filteredHabits) {
-            viewAdapter.notifyItemChanged(habitsPositions[habit]!!)
+
+            viewAdapter.notifyDataSetChanged()
         }
 
         return view
@@ -121,8 +112,8 @@ class ListFragment: Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState.putParcelableArrayList("habits", ArrayList<Parcelable>(habits))
         outState.putParcelableArrayList("filteredHabits", ArrayList<Parcelable>(filteredHabits))
+        outState.putSerializable("type", filterType)
     }
 }
 

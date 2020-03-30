@@ -35,12 +35,24 @@ class ViewPagerFragment: Fragment() {
         tabLayout.setupWithViewPager(viewPager)
 
         var habit: Habit? = null
+        var habitPosition = -1
         arguments?.let {
             habit = it.getParcelable("habit")
+            habitPosition = it.getInt("habitPosition")
         }
         if (habit != null) {
-            goodListFragment.arguments = arguments
-            badListFragment.arguments = arguments
+            if (habitPosition == -1) {
+                habits.add(habit!!)
+            }
+            else {
+                habits[habitPosition] = habit!!
+            }
+
+            val bundle = Bundle()
+            bundle.putParcelableArrayList("habits", ArrayList<Habit>(habits))
+
+            goodListFragment.arguments = bundle
+            badListFragment.arguments = bundle
         }
 
         return view
