@@ -1,6 +1,8 @@
 package com.example.habittracker
 
 import android.os.Parcelable
+import com.example.habittracker.enums.Priority
+import com.example.habittracker.enums.Type
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

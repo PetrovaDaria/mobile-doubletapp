@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_habit_title"
+            android:gravity="center_horizontal"
+            android:textSize="22sp"
+            android:layout_marginBottom="15dp"/>
+
+        <EditText
+            android:id="@+id/habit_name_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/habit_name_hint"
+            android:autofillHints="false"
+            android:inputType="text"/>
+
+        <EditText
+            android:id="@+id/habit_description_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/habit_description_hint"
+            android:autofillHints="false"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/habit_priority_text"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/habit_priority_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="-5dp"
+            android:entries="@array/habit_priorities"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/habit_type_text"
+            android:textSize="16sp"/>
+
+        <RadioGroup
+            android:id="@+id/habit_type_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton
+                android:id="@+id/habit_type_good"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/habit_type_good"
+                />
+            <RadioButton
+                android:id="@+id/habit_type_bad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/habit_type_bad"
+                />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/habit_times_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/habit_times_hint"
+            android:inputType="number"
+            android:autofillHints="false" />
+
+        <EditText
+            android:id="@+id/habit_period_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/habit_period_hint"
+            android:inputType="number"
+            android:autofillHints="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:gravity="center|bottom"
+            >
+            <Button
+                android:id="@+id/habit_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save_habit_text" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
