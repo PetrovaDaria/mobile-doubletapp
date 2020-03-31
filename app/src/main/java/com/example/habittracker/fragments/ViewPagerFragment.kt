@@ -7,14 +7,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.example.habittracker.Habit
 import com.example.habittracker.R
 import com.example.habittracker.enums.Type
+import com.example.habittracker.models.HabitModel
+import com.example.habittracker.viewModels.ListViewModel
 import com.google.android.material.tabs.TabLayout
 
 class ViewPagerFragment: Fragment() {
-    val habits = mutableListOf<Habit>()
+    var habits = mutableListOf<Habit>()
     val goodListFragment = ListFragment.newInstance(Type.Good)
     val badListFragment =  ListFragment.newInstance(Type.Bad)
 
@@ -34,26 +39,32 @@ class ViewPagerFragment: Fragment() {
         val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
         tabLayout.setupWithViewPager(viewPager)
 
-        var habit: Habit? = null
-        var habitPosition = -1
-        arguments?.let {
-            habit = it.getParcelable("habit")
-            habitPosition = it.getInt("habitPosition")
-        }
-        if (habit != null) {
-            if (habitPosition == -1) {
-                habits.add(habit!!)
-            }
-            else {
-                habits[habitPosition] = habit!!
-            }
+//        val bundle = Bundle()
+//        bundle.putParcelableArrayList("habits", ArrayList<Habit>(habits))
+//
+//        goodListFragment.arguments = bundle
+//        badListFragment.arguments = bundle
 
-            val bundle = Bundle()
-            bundle.putParcelableArrayList("habits", ArrayList<Habit>(habits))
-
-            goodListFragment.arguments = bundle
-            badListFragment.arguments = bundle
-        }
+//        var habit: Habit? = null
+//        var habitPosition = -1
+//        arguments?.let {
+//            habit = it.getParcelable("habit")
+//            habitPosition = it.getInt("habitPosition")
+//        }
+//        if (habit != null) {
+//            if (habitPosition == -1) {
+//                habits.add(habit!!)
+//            }
+//            else {
+//                habits[habitPosition] = habit!!
+//            }
+//
+//            val bundle = Bundle()
+//            bundle.putParcelableArrayList("habits", ArrayList<Habit>(habits))
+//
+//            goodListFragment.arguments = bundle
+//            badListFragment.arguments = bundle
+//        }
 
         return view
     }

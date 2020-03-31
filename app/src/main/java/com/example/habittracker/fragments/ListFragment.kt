@@ -7,11 +7,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.*
 import com.example.habittracker.enums.Type
+import com.example.habittracker.models.HabitModel
+import com.example.habittracker.viewModels.ListViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ListFragment: Fragment() {
     var callback: ListCallback? = null
@@ -21,6 +28,8 @@ class ListFragment: Fragment() {
     private lateinit var filterType: Type
     private var filteredHabits = mutableListOf<Habit>()
     private var habitsPositions = mutableMapOf<Habit, Int>()
+
+    private lateinit var viewModel: ListViewModel
 
     companion object {
         fun newInstance(type: Type): ListFragment {
@@ -58,6 +67,12 @@ class ListFragment: Fragment() {
                 onEditHabit(v)
             }
         })
+
+        viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return ListViewModel(HabitModel.getInstance(), filterType) as T
+            }
+        }).get(ListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -77,23 +92,13 @@ class ListFragment: Fragment() {
             callback?.onAddHabit()
         }
 
-        var habits: List<Habit>? = null
-        arguments?.let {
-            habits = it.getParcelableArrayList<Habit>("habits")
-        }
+        viewModel.getHabits()
 
-        if (habits != null) {
+        viewModel.habits.observe(viewLifecycleOwner, Observer { habits ->
             filteredHabits.clear()
-            for (i in habits!!.indices) {
-                val h = habits!![i]
-                if (h.Type == filterType) {
-                    filteredHabits.add(h)
-                    habitsPositions[h] = i
-                }
-            }
-
+            filteredHabits.addAll(habits)
             viewAdapter.notifyDataSetChanged()
-        }
+        })
 
         return view
     }
@@ -102,10 +107,7 @@ class ListFragment: Fragment() {
         if (v != null) {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as DataAdapter).getHabit(position)
-            val realPosition = habitsPositions[habit]
-            if (realPosition != null) {
-                callback?.onEditHabit(habit, realPosition)
-            }
+            callback?.onEditHabit(habit.Id)
         }
     }
 
@@ -120,5 +122,5 @@ class ListFragment: Fragment() {
 interface ListCallback {
     fun onAddHabit()
 
-    fun onEditHabit(habit: Habit, habitPosition: Int)
+    fun onEditHabit(habitId: UUID)
 }
