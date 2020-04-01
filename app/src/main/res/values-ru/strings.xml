@@ -42,4 +42,8 @@
         <item quantity="many">раз</item>
         <item quantity="other">раз</item>
     </plurals>
+    <string name="find_by_name">Поиск по имени</string>
+    <string name="sort_by_priority">Сортировка по приоритету</string>
+    <string name="name_or_descr">Имя или описание</string>
+    <string name="find_and_sort">Поиск и сортировка</string>
 </resources>
