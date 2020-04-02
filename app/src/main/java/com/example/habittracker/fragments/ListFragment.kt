@@ -98,16 +98,29 @@ class ListFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.list_fragment, container, false)
 
+        initRecyclerView(view)
+        initFab(view)
+        observeHabits()
+        initBottomSheet(view)
+
+        return view
+    }
+
+    private fun initRecyclerView(view: View) {
         viewManager = LinearLayoutManager(context)
         recyclerView = view.findViewById(R.id.habits_list_recycler_view)
         recyclerView.layoutManager = viewManager
         recyclerView.adapter = viewAdapter
+    }
 
+    private fun initFab(view: View) {
         val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
         fab.setOnClickListener {
             callback?.onAddHabit()
         }
+    }
 
+    private fun observeHabits() {
         viewModel.getHabits()
 
         viewModel.habits.observe(viewLifecycleOwner, Observer { habits ->
@@ -115,9 +128,12 @@ class ListFragment: Fragment() {
             filteredHabits.addAll(habits)
             viewAdapter.notifyDataSetChanged()
         })
+    }
 
+    private fun initBottomSheet(view: View) {
         val bottomSheet = view.findViewById<LinearLayout>(R.id.bottom_sheet)
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        val fab = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
         bottomSheetBehavior.setBottomSheetCallback(object: BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
@@ -137,6 +153,11 @@ class ListFragment: Fragment() {
             }
         })
 
+        initNameField(bottomSheet)
+        initPrioritySpinner(bottomSheet)
+    }
+
+    private fun initNameField(bottomSheet: View) {
         val nameField = bottomSheet.findViewById<EditText>(R.id.find_by_name_field)
         nameField.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -152,7 +173,9 @@ class ListFragment: Fragment() {
             }
 
         })
+    }
 
+    private fun initPrioritySpinner(bottomSheet: View) {
         val prioritySpinner = bottomSheet.findViewById<Spinner>(R.id.sort_by_priority_field)
         prioritySpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -170,10 +193,7 @@ class ListFragment: Fragment() {
                 println(selectedSort)
                 viewModel.setPrioritySort(selectedSort)
             }
-
         }
-
-        return view
     }
 
     fun onEditHabit(v: View?) {
