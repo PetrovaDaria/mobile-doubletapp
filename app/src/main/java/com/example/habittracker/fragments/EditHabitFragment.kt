@@ -1,22 +1,26 @@
 package com.example.habittracker.fragments
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.habittracker.Habit
 import com.example.habittracker.enums.Priority
 import com.example.habittracker.R
 import com.example.habittracker.enums.Type
+import com.example.habittracker.models.HabitModel
+import com.example.habittracker.viewModels.EditHabitViewModel
+import java.util.*
 
 class EditHabitFragment: Fragment() {
-    private var habitPosition = -1
+    private var habitId: UUID? = null
     var callback: EditHabitCallback? = null
+    private lateinit var viewModel: EditHabitViewModel
 
     private val habitPriorities = mapOf(
         Priority.Low to 0,
@@ -36,11 +40,10 @@ class EditHabitFragment: Fragment() {
     )
 
     companion object {
-        fun newInstance(habit: Habit, habitPosition: Int): EditHabitFragment {
+        fun newInstance(habitId: UUID): EditHabitFragment {
             val fragment = EditHabitFragment()
             val bundle = Bundle()
-            bundle.putInt("habitPosition", habitPosition)
-            bundle.putParcelable("habit", habit)
+            bundle.putSerializable("habitId", habitId)
             fragment.arguments = bundle
             return fragment
         }
@@ -52,42 +55,50 @@ class EditHabitFragment: Fragment() {
         callback = activity as EditHabitCallback
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return EditHabitViewModel(HabitModel.getInstance()) as T
+            }
+        }).get(EditHabitViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.edit_habit_fragment, container, false)
-        var habit: Habit? = null
-        var habitPosition = -1
         arguments?.let {
-            habit = it.getParcelable("habit")
-            habitPosition = it.getInt("habitPosition")
+            habitId = it.getSerializable("habitId") as UUID
         }
-        this.habitPosition = habitPosition
 
-        if (habit != null) {
+        if (habitId != null) {
+            val habit = viewModel.getHabitById(habitId!!)
+
             val habitName = view.findViewById<EditText>(R.id.habit_name_edit)
             habitName.setText(habit!!.Name)
 
             val habitDescription = view.findViewById<EditText>(R.id.habit_description_edit)
-            habitDescription.setText(habit!!.Description)
+            habitDescription.setText(habit.Description)
 
             val habitPriority = view.findViewById<Spinner>(R.id.habit_priority_edit)
-            val selection = habitPriorities[habit!!.Priority]
+            val selection = habitPriorities[habit.Priority]
             if (selection != null) {
                 habitPriority.setSelection(selection)
             }
 
-            val habitTypeId = habitTypeToId[habit!!.Type] ?: R.id.habit_type_good
+            val habitTypeId = habitTypeToId[habit.Type] ?: R.id.habit_type_good
             val habitType = view.findViewById<RadioButton>(habitTypeId)
             habitType.isChecked = true
 
             val habitTimes = view.findViewById<EditText>(R.id.habit_times_edit)
-            habitTimes.setText(habit!!.Times.toString())
+            habitTimes.setText(habit.Times.toString())
 
             val habitPeriod = view.findViewById<EditText>(R.id.habit_period_edit)
-            habitPeriod.setText(habit!!.Period.toString())
+            habitPeriod.setText(habit.Period.toString())
         }
 
         return view
@@ -110,16 +121,34 @@ class EditHabitFragment: Fragment() {
                 Type.Bad
             }
 
-            val habit = Habit(
-                name.text.toString() ?: "",
-                description.text.toString() ?: "",
-                priorityValue ?: Priority.High,
-                typeValue ?: Type.Good,
-                times?.text?.toString()?.toInt() ?: 1,
-                period?.text?.toString()?.toInt() ?: 1
-            )
+            val habit: Habit?
+            if (habitId == null) {
+                habit = Habit(
+                    name.text.toString() ?: "",
+                    description.text.toString() ?: "",
+                    priorityValue ?: Priority.High,
+                    typeValue ?: Type.Good,
+                    times?.text?.toString()?.toInt() ?: 1,
+                    period?.text?.toString()?.toInt() ?: 1
+                )
+            } else {
+                habit = Habit(
+                    name.text.toString() ?: "",
+                    description.text.toString() ?: "",
+                    priorityValue ?: Priority.High,
+                    typeValue ?: Type.Good,
+                    times?.text?.toString()?.toInt() ?: 1,
+                    period?.text?.toString()?.toInt() ?: 1,
+                    habitId!!
+                )
+            }
 
-            callback?.onSaveHabit(habit, habitPosition)
+            if (habitId == null) {
+                viewModel.addHabit(habit)
+            } else {
+                viewModel.editHabit(habit)
+            }
+            callback?.onSaveHabit()
         }
 
         val saveBtn = view.findViewById<Button>(R.id.habit_save)
@@ -130,5 +159,5 @@ class EditHabitFragment: Fragment() {
 }
 
 interface EditHabitCallback {
-    fun onSaveHabit(habit: Habit, habitPosition: Int)
+    fun onSaveHabit()
 }

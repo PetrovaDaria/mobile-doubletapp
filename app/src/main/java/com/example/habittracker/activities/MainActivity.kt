@@ -11,9 +11,11 @@ import androidx.fragment.app.Fragment
 import com.example.habittracker.Habit
 import com.example.habittracker.R
 import com.example.habittracker.fragments.*
+import com.example.habittracker.models.HabitModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -38,16 +40,12 @@ class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback, Navig
         replaceFragment(EditHabitFragment(), EDIT_HABIT_TAG)
     }
 
-    override fun onEditHabit(habit: Habit, habitPosition: Int) {
-        val fragment = EditHabitFragment.newInstance(habit, habitPosition)
+    override fun onEditHabit(habitId: UUID) {
+        val fragment = EditHabitFragment.newInstance(habitId)
         replaceFragment(fragment, EDIT_HABIT_TAG)
     }
 
-    override fun onSaveHabit(habit: Habit, habitPosition: Int) {
-        val bundle = Bundle()
-        bundle.putInt("habitPosition", habitPosition)
-        bundle.putParcelable("habit", habit)
-        viewPagerFragment.arguments = bundle
+    override fun onSaveHabit() {
         onBackPressed()
     }
 
