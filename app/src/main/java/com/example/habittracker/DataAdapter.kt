@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.enums.Priority
 import com.example.habittracker.enums.Type
+import com.example.habittracker.models.Habit
 
 
 class DataAdapter(private var items: MutableList<Habit>) : RecyclerView.Adapter<DataAdapter.ViewHolder>() {

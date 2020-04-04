@@ -1,11 +1,10 @@
-package com.example.habittracker
+package com.example.habittracker.models
 
 import android.os.Parcelable
 import androidx.room.*
 import com.example.habittracker.enums.Priority
 import com.example.habittracker.enums.Type
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 
 @Parcelize
 @Entity(tableName = "habits")

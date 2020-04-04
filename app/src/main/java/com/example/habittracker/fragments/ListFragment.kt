@@ -16,13 +16,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.*
+import com.example.habittracker.db.HabitDatabase
 import com.example.habittracker.enums.PrioritySort
 import com.example.habittracker.enums.Type
-import com.example.habittracker.models.HabitModel
+import com.example.habittracker.models.Habit
 import com.example.habittracker.viewModels.ListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ListFragment: Fragment() {

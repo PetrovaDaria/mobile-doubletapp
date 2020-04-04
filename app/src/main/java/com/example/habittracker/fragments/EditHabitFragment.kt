@@ -9,14 +9,12 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habittracker.Habit
-import com.example.habittracker.HabitDatabase
+import com.example.habittracker.models.Habit
+import com.example.habittracker.db.HabitDatabase
 import com.example.habittracker.enums.Priority
 import com.example.habittracker.R
 import com.example.habittracker.enums.Type
-import com.example.habittracker.models.HabitModel
 import com.example.habittracker.viewModels.EditHabitViewModel
-import java.util.*
 
 class EditHabitFragment: Fragment() {
     private var habitId: Int? = null

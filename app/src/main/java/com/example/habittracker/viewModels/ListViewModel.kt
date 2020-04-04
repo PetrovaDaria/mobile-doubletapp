@@ -2,8 +2,8 @@ package com.example.habittracker.viewModels
 
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import com.example.habittracker.Habit
-import com.example.habittracker.HabitDatabase
+import com.example.habittracker.models.Habit
+import com.example.habittracker.db.HabitDatabase
 import com.example.habittracker.enums.PrioritySort
 import com.example.habittracker.enums.Type
 import java.util.*

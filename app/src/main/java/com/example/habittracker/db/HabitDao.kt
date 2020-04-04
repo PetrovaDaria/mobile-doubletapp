@@ -1,15 +1,24 @@
-package com.example.habittracker
+package com.example.habittracker.db
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.habittracker.enums.Type
+import com.example.habittracker.models.Habit
 
 @Dao
 interface HabitDao {
     @Query("SELECT * from habits")
     fun getAll(): List<Habit>
+
+    @Query("SELECT * FROM habits WHERE id = (:id) LIMIT 1")
+    fun getHabitById(id: Int): Habit
+
+    @Insert
+    fun insert(habit: Habit)
+
+    @Update
+    fun update(habit: Habit)
 
 //    @Query("SELECT * FROM habits WHERE type = (:type)")
 //    fun filterByType(type: Int): List<Habit>
@@ -28,13 +37,4 @@ interface HabitDao {
 //
 //    @Query("SELECT * FROM habits WHERE type = (:type) and (name LIKE (:sequence) or description LIKE (:sequence)) ORDER BY priority DESC")
 //    fun filterByTypeAndSearchAndSortByDescPriority(type: Type, sequence: String): List<Habit>
-
-    @Query("SELECT * FROM habits WHERE id = (:id) LIMIT 1")
-    fun getHabitById(id: Int): Habit
-
-    @Insert
-    fun insert(habit: Habit)
-
-    @Update
-    fun update(habit: Habit)
 }

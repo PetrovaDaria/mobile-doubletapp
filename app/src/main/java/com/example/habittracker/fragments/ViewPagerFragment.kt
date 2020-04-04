@@ -7,15 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-import com.example.habittracker.Habit
+import com.example.habittracker.models.Habit
 import com.example.habittracker.R
 import com.example.habittracker.enums.Type
-import com.example.habittracker.models.HabitModel
-import com.example.habittracker.viewModels.ListViewModel
 import com.google.android.material.tabs.TabLayout
 
 class ViewPagerFragment: Fragment() {

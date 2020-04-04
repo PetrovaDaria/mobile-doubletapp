@@ -1,8 +1,8 @@
 package com.example.habittracker.viewModels
 
 import androidx.lifecycle.ViewModel
-import com.example.habittracker.Habit
-import com.example.habittracker.HabitDatabase
+import com.example.habittracker.models.Habit
+import com.example.habittracker.db.HabitDatabase
 
 class EditHabitViewModel(private val db: HabitDatabase): ViewModel() {
     fun addHabit(habit: Habit) {
