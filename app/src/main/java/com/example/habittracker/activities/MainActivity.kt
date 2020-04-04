@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback, Navig
         replaceFragment(EditHabitFragment(), EDIT_HABIT_TAG)
     }
 
-    override fun onEditHabit(habitId: UUID) {
+    override fun onEditHabit(habitId: Int) {
         val fragment = EditHabitFragment.newInstance(habitId)
         replaceFragment(fragment, EDIT_HABIT_TAG)
     }
