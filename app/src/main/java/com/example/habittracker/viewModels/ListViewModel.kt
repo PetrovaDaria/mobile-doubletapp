@@ -1,15 +1,19 @@
 package com.example.habittracker.viewModels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.habittracker.Habit
+import androidx.lifecycle.*
+import androidx.lifecycle.Observer
+import com.example.habittracker.models.Habit
+import com.example.habittracker.db.HabitDatabase
 import com.example.habittracker.enums.PrioritySort
 import com.example.habittracker.enums.Type
-import com.example.habittracker.models.HabitModel
 import java.util.*
 
-class ListViewModel(private val model: HabitModel, private val habitType: Type): ViewModel() {
+class ListViewModel(private val db: HabitDatabase, private val habitType: Type): ViewModel() {
+    private lateinit var allHabits: List<Habit>
+    private val getAllObserver = Observer<List<Habit>> { habits ->
+        allHabits = habits
+        applySettings(habits)
+    }
     private val mutableHabits: MutableLiveData<List<Habit>> = MutableLiveData()
 
     val habits: LiveData<List<Habit>> = mutableHabits
@@ -18,34 +22,33 @@ class ListViewModel(private val model: HabitModel, private val habitType: Type):
     private var prioritySort = PrioritySort.None
 
     init {
-        getHabits()
+        db.habitDao().getAll().observeForever(getAllObserver)
     }
 
-    fun getHabits() {
-        applySettings()
+    override fun onCleared() {
+        super.onCleared()
+        db.habitDao().getAll().removeObserver(getAllObserver)
     }
 
-    fun setNameAndDescrFilter(sequence: String) {
+    fun setSearchFilter(sequence: String) {
         this.sequence = sequence.toLowerCase(Locale.ROOT)
-        applySettings()
+        applySettings(allHabits)
     }
 
     fun setPrioritySort(prioritySort: PrioritySort) {
         this.prioritySort = prioritySort
-        applySettings()
+        applySettings(allHabits)
     }
 
-    private fun applySettings() {
-        var filteredHabits = filterByType()
+    private fun applySettings(habits: List<Habit>) {
+        var filteredHabits = filterByType(habits)
         filteredHabits = filterBySequence(filteredHabits)
         filteredHabits = sortByPriority(filteredHabits)
         mutableHabits.value = filteredHabits
-
     }
 
-    private fun filterByType(): List<Habit> {
-        val allHabits = model.getAll()
-        return allHabits.filter{it.Type == habitType}
+    private fun filterByType(habits: List<Habit>): List<Habit> {
+        return habits.filter{it.Type == habitType}
     }
 
     private fun filterBySequence(habits: List<Habit>): List<Habit> {
@@ -68,4 +71,50 @@ class ListViewModel(private val model: HabitModel, private val habitType: Type):
 
         return habits
     }
+
+//    private fun applySettings() {
+//        if (sequence.value == "") {
+//            when (prioritySort.value) {
+//                PrioritySort.None -> {
+//                    mutableHabits.value = db.habitDao().filterByType(habitType)
+//                }
+//                PrioritySort.HighToLow -> {
+//                    mutableHabits.value = db.habitDao().filterByTypeAndSortDescByPriority(habitType)
+//                }
+//                PrioritySort.LowToHigh -> {
+//                    mutableHabits.value = db.habitDao().filterByTypeAndSortAscByPriority(habitType)
+//                }
+//            }
+//        } else {
+//            when (prioritySort.value) {
+//                PrioritySort.None -> {
+//                    mutableHabits.value = db.habitDao().filterByTypeAndSearch(habitType, sequence.value!!)
+//                }
+//                PrioritySort.HighToLow -> {
+//                    mutableHabits.value = db.habitDao()
+//                        .filterByTypeAndSearchAndSortByDescPriority(habitType, sequence.value!!)
+//                }
+//                PrioritySort.LowToHigh -> {
+//                    mutableHabits.value = db.habitDao().filterByTypeAndSearchAndSortByAscPriority(habitType, sequence.value!!)
+//
+//                }
+//            }
+//        }
+//    }
+
+//    private fun formulateQuery(): String {
+//        var query = "SELECT * FROM WHERE type = $habitType"
+//        if (sequence.value != "") {
+//            query += " AND (name LIKE $sequence OR description LIKE $sequence"
+//        }
+//        if (prioritySort.value != PrioritySort.None) {
+//            query += " ORDER BY priority"
+//            query += if (prioritySort.value == PrioritySort.HighToLow) {
+//                " DESC"
+//            } else {
+//                " ASC"
+//            }
+//        }
+//        return query
+//    }
 }

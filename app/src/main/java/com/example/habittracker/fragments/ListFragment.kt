@@ -16,13 +16,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habittracker.*
+import com.example.habittracker.db.HabitDatabase
 import com.example.habittracker.enums.PrioritySort
 import com.example.habittracker.enums.Type
-import com.example.habittracker.models.HabitModel
+import com.example.habittracker.models.Habit
 import com.example.habittracker.viewModels.ListViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import java.util.*
 import kotlin.collections.ArrayList
 
 class ListFragment: Fragment() {
@@ -57,7 +57,6 @@ class ListFragment: Fragment() {
 
         checkSavedInstanceState(savedInstanceState)
         initViewAdapter()
-        initViewModel()
     }
 
     private fun checkSavedInstanceState(savedInstanceState: Bundle?) {
@@ -85,7 +84,10 @@ class ListFragment: Fragment() {
     private fun initViewModel() {
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return ListViewModel(HabitModel.getInstance(), filterType) as T
+                return ListViewModel(
+                    HabitDatabase.getInstance(activity!!.applicationContext),
+                    filterType
+                ) as T
             }
         }).get(ListViewModel::class.java)
 
@@ -98,6 +100,7 @@ class ListFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.list_fragment, container, false)
 
+        initViewModel()
         initRecyclerView(view)
         initFab(view)
         observeHabits()
@@ -121,8 +124,6 @@ class ListFragment: Fragment() {
     }
 
     private fun observeHabits() {
-        viewModel.getHabits()
-
         viewModel.habits.observe(viewLifecycleOwner, Observer { habits ->
             filteredHabits.clear()
             filteredHabits.addAll(habits)
@@ -161,7 +162,7 @@ class ListFragment: Fragment() {
         val nameField = bottomSheet.findViewById<EditText>(R.id.find_by_name_field)
         nameField.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                viewModel.setNameAndDescrFilter(s.toString())
+                viewModel.setSearchFilter(s.toString())
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -189,8 +190,6 @@ class ListFragment: Fragment() {
                 id: Long
             ) {
                 val selectedSort = PrioritySort.values()[prioritySpinner.selectedItemPosition]
-                println(prioritySpinner.selectedItemPosition)
-                println(selectedSort)
                 viewModel.setPrioritySort(selectedSort)
             }
         }
@@ -200,7 +199,7 @@ class ListFragment: Fragment() {
         if (v != null) {
             val position = viewManager.getPosition(v)
             val habit = (viewAdapter as DataAdapter).getHabit(position)
-            callback?.onEditHabit(habit.Id)
+            callback?.onEditHabit(habit.Id!!)
         }
     }
 
@@ -215,5 +214,5 @@ class ListFragment: Fragment() {
 interface ListCallback {
     fun onAddHabit()
 
-    fun onEditHabit(habitId: UUID)
+    fun onEditHabit(habitId: Int)
 }

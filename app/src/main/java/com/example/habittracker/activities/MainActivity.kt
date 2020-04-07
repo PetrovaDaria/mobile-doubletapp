@@ -1,21 +1,14 @@
 package com.example.habittracker.activities
 
 import android.os.Bundle
-import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import com.example.habittracker.Habit
 import com.example.habittracker.R
 import com.example.habittracker.fragments.*
-import com.example.habittracker.models.HabitModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.toolbar.*
-import java.util.*
 
 
 class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -40,7 +33,7 @@ class MainActivity : AppCompatActivity(), ListCallback, EditHabitCallback, Navig
         replaceFragment(EditHabitFragment(), EDIT_HABIT_TAG)
     }
 
-    override fun onEditHabit(habitId: UUID) {
+    override fun onEditHabit(habitId: Int) {
         val fragment = EditHabitFragment.newInstance(habitId)
         replaceFragment(fragment, EDIT_HABIT_TAG)
     }

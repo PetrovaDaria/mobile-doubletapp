@@ -9,16 +9,15 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habittracker.Habit
+import com.example.habittracker.models.Habit
+import com.example.habittracker.db.HabitDatabase
 import com.example.habittracker.enums.Priority
 import com.example.habittracker.R
 import com.example.habittracker.enums.Type
-import com.example.habittracker.models.HabitModel
 import com.example.habittracker.viewModels.EditHabitViewModel
-import java.util.*
 
 class EditHabitFragment: Fragment() {
-    private var habitId: UUID? = null
+    private var habitId: Int? = null
     var callback: EditHabitCallback? = null
     private lateinit var viewModel: EditHabitViewModel
 
@@ -40,10 +39,10 @@ class EditHabitFragment: Fragment() {
     )
 
     companion object {
-        fun newInstance(habitId: UUID): EditHabitFragment {
+        fun newInstance(habitId: Int): EditHabitFragment {
             val fragment = EditHabitFragment()
             val bundle = Bundle()
-            bundle.putSerializable("habitId", habitId)
+            bundle.putInt("habitId", habitId)
             fragment.arguments = bundle
             return fragment
         }
@@ -60,7 +59,7 @@ class EditHabitFragment: Fragment() {
 
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return EditHabitViewModel(HabitModel.getInstance()) as T
+                return EditHabitViewModel(HabitDatabase.getInstance(activity!!.applicationContext)) as T
             }
         }).get(EditHabitViewModel::class.java)
     }
@@ -72,14 +71,14 @@ class EditHabitFragment: Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.edit_habit_fragment, container, false)
         arguments?.let {
-            habitId = it.getSerializable("habitId") as UUID
+            habitId = it.getInt("habitId")
         }
 
         if (habitId != null) {
             val habit = viewModel.getHabitById(habitId!!)
 
             val habitName = view.findViewById<EditText>(R.id.habit_name_edit)
-            habitName.setText(habit!!.Name)
+            habitName.setText(habit.Name)
 
             val habitDescription = view.findViewById<EditText>(R.id.habit_description_edit)
             habitDescription.setText(habit.Description)
