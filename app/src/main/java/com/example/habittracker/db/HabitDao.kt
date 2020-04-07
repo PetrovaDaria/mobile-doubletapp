@@ -1,5 +1,6 @@
 package com.example.habittracker.db
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -9,7 +10,7 @@ import com.example.habittracker.models.Habit
 @Dao
 interface HabitDao {
     @Query("SELECT * from habits")
-    fun getAll(): List<Habit>
+    fun getAll(): LiveData<List<Habit>>
 
     @Query("SELECT * FROM habits WHERE id = (:id) LIMIT 1")
     fun getHabitById(id: Int): Habit

@@ -85,7 +85,6 @@ class ListFragment: Fragment() {
         viewModel = ViewModelProvider(this, object: ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 return ListViewModel(
-                    viewLifecycleOwner,
                     HabitDatabase.getInstance(activity!!.applicationContext),
                     filterType
                 ) as T
@@ -125,8 +124,6 @@ class ListFragment: Fragment() {
     }
 
     private fun observeHabits() {
-        // viewModel.getHabits()
-
         viewModel.habits.observe(viewLifecycleOwner, Observer { habits ->
             filteredHabits.clear()
             filteredHabits.addAll(habits)
