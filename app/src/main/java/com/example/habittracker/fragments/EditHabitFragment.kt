@@ -120,24 +120,36 @@ class EditHabitFragment: Fragment() {
                 Type.Bad
             }
 
+            val timesValue = if (times.text.toString() == "") {
+                1
+            } else {
+                times.text.toString().toInt();
+            }
+
+            val periodValue = if (period.text.toString() == "") {
+                1
+            } else {
+                period.text.toString().toInt();
+            }
+
             val habit: Habit?
             if (habitId == null) {
                 habit = Habit(
-                    name.text.toString() ?: "",
-                    description.text.toString() ?: "",
-                    priorityValue ?: Priority.High,
-                    typeValue ?: Type.Good,
-                    times?.text?.toString()?.toInt() ?: 1,
-                    period?.text?.toString()?.toInt() ?: 1
+                    name.text.toString(),
+                    description.text.toString(),
+                    priorityValue,
+                    typeValue,
+                    timesValue,
+                    periodValue
                 )
             } else {
                 habit = Habit(
-                    name.text.toString() ?: "",
-                    description.text.toString() ?: "",
-                    priorityValue ?: Priority.High,
-                    typeValue ?: Type.Good,
-                    times?.text?.toString()?.toInt() ?: 1,
-                    period?.text?.toString()?.toInt() ?: 1,
+                    name.text.toString(),
+                    description.text.toString(),
+                    priorityValue,
+                    typeValue,
+                    timesValue,
+                    periodValue,
                     habitId!!
                 )
             }
