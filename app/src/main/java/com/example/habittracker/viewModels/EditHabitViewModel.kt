@@ -9,17 +9,21 @@ import kotlin.coroutines.CoroutineContext
 class EditHabitViewModel(private val db: HabitDatabase): ViewModel(), CoroutineScope {
     private val job = SupervisorJob()
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job + CoroutineExceptionHandler{_, e -> throw e}
+        get() = Dispatchers.Main + job + CoroutineExceptionHandler{_, e -> throw e}
 
     fun addHabit(habit: Habit) {
         launch {
-            db.habitDao().insert(habit)
+            withContext(Dispatchers.IO) {
+                db.habitDao().insert(habit)
+            }
         }
     }
 
     fun editHabit(habit: Habit) {
         launch {
-            db.habitDao().update(habit)
+            withContext(Dispatchers.IO) {
+                db.habitDao().update(habit)
+            }
         }
     }
 
